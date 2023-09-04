@@ -17,7 +17,6 @@ const GeneratorForm = ({ setData, data }) => {
 
   const { history, addToHistory } = useHistory();
 
-
   const [uuid, setUuid] = useState(null);
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
@@ -226,14 +225,14 @@ const GeneratorForm = ({ setData, data }) => {
               {loading && <Loader2 className="h-5 w-5 animate-spin" />}
               Generate
             </button>
-          {data && (
-            <button
-              onClick={handleDownload}
-              className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
-            >
-              Download CSV
-            </button>
-          )}
+            {data && (
+              <button
+                onClick={handleDownload}
+                className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+              >
+                Download CSV
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -247,7 +246,6 @@ const GeneratorForm = ({ setData, data }) => {
             onClick={() => setRequestData(item)}
             key={item?.dataset_id}
           >
-
             <p>
               <span>Cardinality:</span>
               {item.cardinality}
@@ -279,11 +277,6 @@ const GeneratorForm = ({ setData, data }) => {
           </div>
         ))}
         {!history?.length && <p className="text-lg">No Render History</p>}
-
-           
-          
-        </div>
-
       </div>
     </div>
   );
