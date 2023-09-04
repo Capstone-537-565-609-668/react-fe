@@ -10,10 +10,9 @@ const initObj = {
   irregularity: 0,
   spikiness: 0,
 };
-const GeneratorForm = ({ setData }) => {
+const GeneratorForm = ({ setData, data }) => {
   const [requestData, setRequestData] = useState(initObj);
   const [loading, setLoading] = useState(false);
-  const [hide, setHide] = useState(false);
   const [uuid, setUuid] = useState(null);
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
@@ -80,7 +79,6 @@ const GeneratorForm = ({ setData }) => {
         console.log(temp.features.map((item) => item.geometry.coordinates[0]));
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
-        setHide(true);
       })
       .catch((err) => {
         console.log(err);
@@ -220,7 +218,7 @@ const GeneratorForm = ({ setData }) => {
             {loading && <Loader2 className="h-5 w-5 animate-spin" />}
             Generate
           </button>
-          {hide && (
+          {data && (
             <button
               onClick={handleDownload}
               className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
