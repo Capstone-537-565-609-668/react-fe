@@ -13,7 +13,7 @@ const MapOutput = ({ data: coordinates }) => {
       {coordinates && (
         <MapContainer
           center={coordinates[0][0]}
-          zoom={10}
+          zoom={3}
           style={{ height: "400px", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

@@ -8,7 +8,7 @@ export default function GeneratorDashboard() {
   return (
     <div className="w-full min-h-screen">
       <div className="grid grid-cols-2">
-        <GeneratorForm setData={setData} />
+        <GeneratorForm setData={setData} data={data} />
         <MapOutput data={data} />
       </div>
     </div>
