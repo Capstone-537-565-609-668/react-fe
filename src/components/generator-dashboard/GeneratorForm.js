@@ -13,13 +13,50 @@ const initObj = {
 const GeneratorForm = ({ setData }) => {
   const [requestData, setRequestData] = useState(initObj);
   const [loading, setLoading] = useState(false);
+  const [hide, setHide] = useState(false);
+  const [uuid, setUuid] = useState(null);
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
   };
 
+  const handleDownload = (e) => {
+    e.preventDefault();
+
+    //return type is a zip file and make sure to download the zip file
+
+    fetch(`http://localhost:5000/get_file/${uuid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/zip",
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log("Hereee");
+          return res.blob();
+        }
+        alert("Something went wrong");
+      })
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${uuid}.zip`;
+        a.click();
+
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Error downloading zip file:", error);
+      });
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(requestData);
+
     setLoading(true);
     fetch("http://localhost:5000/", {
       method: "POST",
@@ -37,10 +74,13 @@ const GeneratorForm = ({ setData }) => {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log(res);
+        setUuid(res.dataset_id);
         let temp = JSON.parse(res.for_visualizer);
         console.log(temp.features.map((item) => item.geometry.coordinates[0]));
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
+        setHide(true);
       })
       .catch((err) => {
         console.log(err);
@@ -180,6 +220,14 @@ const GeneratorForm = ({ setData }) => {
             {loading && <Loader2 className="h-5 w-5 animate-spin" />}
             Generate
           </button>
+          {hide && (
+            <button
+              onClick={handleDownload}
+              className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+            >
+              Download CSV
+            </button>
+          )}
         </div>
       </div>
     </div>
