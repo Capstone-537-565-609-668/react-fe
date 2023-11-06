@@ -2,17 +2,8 @@ import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import useHistory from "../../hooks/useHistory";
 
-const initObj = {
-  cardinality: 3,
-  xsize: 500,
-  ysize: 500,
-  minvertices: 3,
-  maxvertices: 3,
-  irregularity: 0,
-  spikiness: 0,
-};
-const GeneratorForm = ({ setData, data }) => {
-  const [requestData, setRequestData] = useState(initObj);
+const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
+  // const [requestData, setRequestData] = useState(initObj);
   const [loading, setLoading] = useState(false);
 
   const { history, addToHistory } = useHistory();
@@ -81,7 +72,11 @@ const GeneratorForm = ({ setData, data }) => {
         console.log(res);
         setUuid(res.dataset_id);
         let temp = JSON.parse(res.for_visualizer);
-        console.log(temp.features.map((item) => item.geometry.coordinates[0]));
+        console.log(
+          JSON.stringify(
+            temp.features.map((item) => item.geometry.coordinates[0])
+          )
+        );
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
         addToHistory({ ...requestData, dataset_id: res.dataset_id });
