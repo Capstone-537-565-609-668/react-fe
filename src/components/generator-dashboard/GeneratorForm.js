@@ -47,6 +47,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         console.error("Error downloading zip file:", error);
       });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(requestData);
