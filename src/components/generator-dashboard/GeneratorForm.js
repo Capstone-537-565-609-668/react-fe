@@ -9,6 +9,12 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   const { history, addToHistory } = useHistory();
 
   const [uuid, setUuid] = useState(null);
+  const [isHistoryMode, setIsHistoryMode] = useState(false);
+
+  const setRequestDataWithId = (item) => {
+    setIsHistoryMode(true);
+    setRequestData({ ...item, dataset_id: item.dataset_id,for_visualizer:  item.for_visualizer});
+  };
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
   };
@@ -50,6 +56,21 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(isHistoryMode);
+    if (isHistoryMode) {
+    // If in history mode, use the stored dataset_id and for_visualizer data
+    console.log("wtf")
+    console.log(requestData)
+    setUuid(requestData.dataset_id);
+
+    // Assuming requestData.for_visualizer is a stringified JSON
+    const temp = JSON.parse(requestData.for_visualizer);
+    setData(temp.features.map((item) => item.geometry.coordinates[0]));
+    setIsHistoryMode(false);
+    setLoading(false);
+    // No need to add to history in this case
+  } else {
+    console.log("correct")
     console.log(requestData);
 
     setLoading(true);
@@ -79,13 +100,21 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
           )
         );
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
+        setRequestData((prevData) => ({
+          ...prevData,
+          dataset_id: res.dataset_id,
+          for_visualizer: res.for_visualizer,
+        }));
+        setIsHistoryMode(false);
+        console.log(isHistoryMode);
         setLoading(false);
-        addToHistory({ ...requestData, dataset_id: res.dataset_id });
+        addToHistory({ ...requestData, dataset_id: res.dataset_id,for_visualizer: res.for_visualizer});
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
       });
+    }
   };
   return (
     <div className="col-span-1 p-8 flex flex-col">
@@ -239,7 +268,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         {history?.map((item) => (
           <div
             className="flex gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
-            onClick={() => setRequestData(item)}
+            onClick={() => setRequestDataWithId(item)}
             key={item?.dataset_id}
           >
             <p>
