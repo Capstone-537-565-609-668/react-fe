@@ -6,7 +6,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   // const [requestData, setRequestData] = useState(initObj);
   const [loading, setLoading] = useState(false);
 
-  const { history, addToHistory } = useHistory();
+  const { history, addToHistory } = useHistory("polygon-gen-history");
 
   const [uuid, setUuid] = useState(null);
   const handleChange = (e) => {
@@ -238,7 +238,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         </h3>
         {history?.map((item) => (
           <div
-            className="flex gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
+            className="flex flex-wrap gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
             onClick={() => setRequestData(item)}
             key={item?.dataset_id}
           >

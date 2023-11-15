@@ -1,11 +1,12 @@
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import useHistory from "../../hooks/useHistory";
 const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   const [loading, setLoading] = useState(false);
 
   const [uuid, setUuid] = useState(null);
-
+  const { history, addToHistory } = useHistory("realistic-polygon");
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
   };
@@ -40,6 +41,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         );
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
+        addToHistory({ ...requestData, dataset_id: res.dataset_id });
       })
       .catch((err) => {
         console.log(err);
@@ -177,6 +179,36 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
             )}
           </div>
         </div>
+      </div>
+      <div className="bg-slate-100 rounded-md p-4" key={history}>
+        <h3>
+          <span className="text-2xl font-bold">Generation History</span>
+        </h3>
+        {history?.map((item) => (
+          <div
+            className="flex gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
+            onClick={() => setRequestData(item)}
+            key={item?.dataset_id}
+          >
+            <p>
+              <span>Cardinality:</span>
+              {item.cardinality}
+            </p>
+            <p>
+              <span>Xsize:</span>
+              {item.xsize}
+            </p>
+            <p>
+              <span>Ysize:</span>
+              {item.ysize}
+            </p>
+            <p>
+              <span>Type:</span>
+              {item.type}
+            </p>
+          </div>
+        ))}
+        {!history?.length && <p className="text-lg">No Render History</p>}
       </div>
     </div>
   );
