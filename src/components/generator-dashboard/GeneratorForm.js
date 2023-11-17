@@ -282,7 +282,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         <h3>
           <span className="text-2xl font-bold">Generation History</span>
         </h3>
-        {history?.map((item) => (
+        {history.reverse()?.map((item) => (
           <div
             className="flex flex-wrap gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
             onClick={(event) => handleClickRecord(event, item)}

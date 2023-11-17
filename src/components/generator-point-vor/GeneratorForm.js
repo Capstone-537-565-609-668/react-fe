@@ -74,7 +74,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
       });
   };
 
-  const handleDownload = (e,ext) => {
+  const handleDownload = (e, ext) => {
     e.preventDefault();
 
     //return type is a zip file and make sure to download the zip file
@@ -167,16 +167,16 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
           </div>
           <div className="flex gap-4 ">
             <div>
-            <button
-              onClick={handleSubmit}
-              className="bg-black text-white flex rounded-md px-4 py-2 text-sm hover:bg-slate-400 disabled:bg-slate-400 disabled:text-black"
-              disabled={loading}
-            >
-              {loading && <Loader2 className="h-5 w-5 animate-spin" />}
-              Generate
+              <button
+                onClick={handleSubmit}
+                className="bg-black text-white flex rounded-md px-4 py-2 text-sm hover:bg-slate-400 disabled:bg-slate-400 disabled:text-black"
+                disabled={loading}
+              >
+                {loading && <Loader2 className="h-5 w-5 animate-spin" />}
+                Generate
               </button>
-              </div>
-              {data && (
+            </div>
+            {data && (
               <div className="flex flex-wrap gap-6">
                 <button
                   onClick={(event) => handleDownload(event, "csv")}
@@ -206,7 +206,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         <h3>
           <span className="text-2xl font-bold">Generation History</span>
         </h3>
-        {history?.map((item) => (
+        {history.reverse()?.map((item) => (
           <div
             className="flex gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
             onClick={(event) => handleClickRecord(event, item)}
