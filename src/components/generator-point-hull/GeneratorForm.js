@@ -1,13 +1,40 @@
-import React from "react";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import useHistory from "../../hooks/useHistory";
 const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   const [loading, setLoading] = useState(false);
 
   const [uuid, setUuid] = useState(null);
-
+  const { history, addToHistory } = useHistory("point-gen-hull");
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
+  };
+  const handleClickRecord = (event, item) => {
+    event.preventDefault();
+    setRequestData(item);
+    setUuid(item.dataset_id);
+
+    fetch(`http://localhost:5000/get_visualization/${uuid}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/zip",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        let temp = JSON.parse(res.for_visualizer);
+        console.log(
+          JSON.stringify(
+            temp.features.map((item) => item.geometry.coordinates[0])
+          )
+        );
+        setData(temp.features.map((item) => item.geometry.coordinates[0]));
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error => ", err);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -39,6 +66,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         );
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
+        addToHistory({ ...requestData, dataset_id: res.dataset_id });
       })
       .catch((err) => {
         console.log(err);
@@ -46,12 +74,12 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
       });
   };
 
-  const handleDownload = (e) => {
+  const handleDownload = (e, ext) => {
     e.preventDefault();
 
     //return type is a zip file and make sure to download the zip file
 
-    fetch(`http://localhost:5000/get_file/${uuid}`, {
+    fetch(`http://localhost:5000/get_file/${uuid}/${ext}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/zip",
@@ -70,7 +98,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${uuid}.zip`;
+        a.download = `${uuid}.${ext}`;
         a.click();
 
         // Cleanup
@@ -140,24 +168,83 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
             </label>
           </div>
           <div className="flex gap-4 ">
-            <button
-              onClick={handleSubmit}
-              className="bg-black text-white flex rounded-md px-4 py-2 text-sm hover:bg-slate-400 disabled:bg-slate-400 disabled:text-black"
-              disabled={loading}
-            >
-              {loading && <Loader2 className="h-5 w-5 animate-spin" />}
-              Generate
-            </button>
-            {data && (
+            <div>
               <button
-                onClick={handleDownload}
-                className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+                onClick={handleSubmit}
+                className="bg-black text-white flex rounded-md px-4 py-2 text-sm hover:bg-slate-400 disabled:bg-slate-400 disabled:text-black"
+                disabled={loading}
               >
-                Download CSV
+                {loading && <Loader2 className="h-5 w-5 animate-spin" />}
+                Generate
               </button>
+            </div>
+            {data && (
+              <div className="flex flex-wrap gap-6">
+                <button
+                  onClick={(event) => handleDownload(event, "csv")}
+                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+                >
+                  Download CSV
+                </button>
+                <button
+                  onClick={(event) => handleDownload(event, "shp")}
+                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+                >
+                  Download SHP
+                </button>
+
+                <button
+                  onClick={(event) => handleDownload(event, "wkt")}
+                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+                >
+                  Download WKT
+                </button>
+              </div>
             )}
           </div>
         </div>
+      </div>
+      <div className="bg-slate-100 rounded-md p-4" key={history}>
+        <h3>
+          <span className="text-2xl font-bold">Generation History</span>
+        </h3>
+        {history.reverse()?.map((item) => (
+          <div
+            className="flex gap-4 text-sm cursor-pointer bg-white p-4 rounded-sm my-2"
+            onClick={(event) => handleClickRecord(event, item)}
+            key={item?.dataset_id}
+          >
+            <p>
+              <span>Cardinality:</span>
+              {item.cardinality}
+            </p>
+            <p>
+              <span>Xsize:</span>
+              {item.xsize}
+            </p>
+            <p>
+              <span>Ysize:</span>
+              {item.ysize}
+            </p>
+            {/* <p>
+              <span>Min Vertices:</span>
+              {item.minvertices}
+            </p>
+            <p>
+              <span>Max Vertices:</span>
+              {item.maxvertices}
+            </p>
+            <p>
+              <span>Irregularity:</span>
+              {item.irregularity}
+            </p>
+            <p>
+              <span>Spikiness:</span>
+              {item.spikiness}
+            </p> */}
+          </div>
+        ))}
+        {!history?.length && <p className="text-lg">No Render History</p>}
       </div>
     </div>
   );
