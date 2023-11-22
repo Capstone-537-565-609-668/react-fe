@@ -17,28 +17,28 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
     event.preventDefault();
     setRequestData(item);
     setUuid(item.dataset_id);
-
-    fetch(`http://localhost:5000/get_visualization/${uuid}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/zip",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        let temp = JSON.parse(res.for_visualizer);
-        console.log(
-          JSON.stringify(
-            temp.features.map((item) => item.geometry.coordinates[0])
-          )
-        );
-        setData(temp.features.map((item) => item.geometry.coordinates[0]));
-        setLoading(false);
+    if (item.dataset_id) {
+      fetch(`http://localhost:5000/get_visualization/${item.dataset_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/zip",
+        },
       })
-      .catch((err) => {
-        console.log("Error => ", err);
-      });
+        .then((res) => res.json())
+        .then((res) => {
+          let temp = JSON.parse(res.for_visualizer);
+          console.log(
+            JSON.stringify(
+              temp.features.map((item) => item.geometry.coordinates[0])
+            )
+          );
+          setData(temp.features.map((item) => item.geometry.coordinates[0]));
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log("Error => ", err);
+        });
+    }
   };
 
   const handleDownload = (e, ext) => {

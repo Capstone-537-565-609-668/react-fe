@@ -43,7 +43,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
     setLoading(true);
 
-    fetch("http://localhost:5000/realistic_polygon/", {
+    fetch("http://localhost:5000/realistic_polygon/v2/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

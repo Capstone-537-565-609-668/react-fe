@@ -121,7 +121,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
             className="text-gray-700 text-sm font-bold mb-2"
             htmlFor="cardinality"
           >
-            Cardinality
+            Number of Seed Points
             <input
               type="number"
               name="cardinality"
@@ -132,6 +132,9 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
               onChange={handleChange}
               value={requestData.cardinality}
             />
+            <p className="text-gray-400 text-sm font-normal">
+              Number of seed points to generate a polygon around
+            </p>
           </label>
           <div className="flex w-full gap-4 items-center">
             <label

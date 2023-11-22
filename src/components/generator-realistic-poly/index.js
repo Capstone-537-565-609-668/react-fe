@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GeneratorForm from "./GeneratorForm";
-import PolygonCanvas from "./PolygonCanvas";
+import MapOutput from "./MapOutput";
 const initObj = {
   cardinality: 10,
   xsize: 500,
@@ -20,13 +20,13 @@ export default function GeneratorDashboard() {
           requestData={requestData}
           setRequestData={setRequestData}
         />
-        <div className="overflow-auto">
-          <PolygonCanvas
-            dimensions={{
-              width: requestData.xsize,
-              height: requestData.ysize,
-            }}
-            polygons={data}
+        <div className="overflow-auto" key={data}>
+          <MapOutput
+            // dimensions={{
+            // width: requestData.xsize,
+            // height: requestData.ysize,
+            // }}
+            data={data}
           />
         </div>
       </div>
