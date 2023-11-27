@@ -2,9 +2,6 @@ import { useState } from "react";
 import GeneratorForm from "./GeneratorForm";
 import MapOutput from "./MapOutput";
 const initObj = {
-  cardinality: 10,
-  xsize: 500,
-  ysize: 500,
   type: "parks",
 };
 

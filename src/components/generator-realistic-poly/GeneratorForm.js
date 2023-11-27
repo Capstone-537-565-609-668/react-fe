@@ -6,9 +6,15 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
   const [uuid, setUuid] = useState(null);
   const { history, addToHistory } = useHistory("realistic-polygon");
+  const [choice, setChoise] = useState("File Size");
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
   };
+
+  const handleSelection = (e) => {
+    setChoise(e.target.value);
+  };
+
   const handleClickRecord = (event, item) => {
     event.preventDefault();
     setRequestData(item);
@@ -36,24 +42,28 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         console.log("Error => ", err);
       });
   };
-
+  console.log(requestData);
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(requestData);
 
     setLoading(true);
 
-    fetch("http://localhost:5000/realistic_polygon/v2/", {
+    fetch("http://localhost:5000/realistic_polygon/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        cardinality: requestData.cardinality,
-        xsize: requestData.xsize,
-        ysize: requestData.ysize,
-        type: requestData.type,
-      }),
+      body:
+        choice === "File Size"
+          ? JSON.stringify({
+              file_size: requestData.gen_choice,
+              type: requestData.type,
+            })
+          : JSON.stringify({
+              card: requestData.gen_choice,
+              type: requestData.type,
+            }),
     })
       .then((res) => res.json())
       .then((res) => {
@@ -80,7 +90,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
     //return type is a zip file and make sure to download the zip file
 
-    fetch(`http://localhost:5000/get_file/${uuid}`, {
+    fetch(`http://localhost:5000/get_file/${uuid}/${ext}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/zip",
@@ -109,6 +119,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         console.error("Error downloading zip file:", error);
       });
   };
+  console.log(choice);
   return (
     <div className="pl-3">
       <div>
@@ -118,55 +129,47 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
           </span>
         </h2>
         <div className="flex flex-col p-4 gap-8">
-          <label
-            className="text-gray-700 text-sm font-bold mb-2"
-            htmlFor="cardinality"
-          >
-            Cardinality
-            <input
-              type="number"
-              name="cardinality"
-              id="cardinality"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              min={1}
-              max={1000}
-              onChange={handleChange}
-              value={requestData.cardinality}
-            />
-          </label>
-          <div className="flex w-full gap-4 items-center">
-            <label
-              className="text-gray-700 text-sm font-bold mb-2 flex-1"
-              htmlFor="xsize"
-            >
-              xsize
-              <input
-                type="number"
-                name="xsize"
-                id="xsize"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                min={500}
-                step={50}
-                onChange={handleChange}
-                value={requestData.xsize}
-              />
-            </label>
-            <label
-              className="text-gray-700 text-sm font-bold mb-2 flex-1"
-              htmlFor="ysize"
-            >
-              ysize
-              <input
-                type="number"
-                name="ysize"
-                id="ysize"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                min={500}
-                step={50}
-                onChange={handleChange}
-                value={requestData.ysize}
-              />
-            </label>
+          <div className="flex flex-row justify-around">
+            <select onChange={handleSelection}>
+              <option>File Size</option>
+              <option>Cardinality</option>
+            </select>
+
+            {choice === "File Size" ? (
+              <label
+                className="text-gray-700 text-sm font-bold mb-2"
+                htmlFor="cardinality"
+              >
+                File Size(in bytes)
+                <input
+                  type="number"
+                  name="gen_choice"
+                  id="gen_choice"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  min={1}
+                  max={1000}
+                  onChange={handleChange}
+                  value={requestData.gen_choice}
+                />
+              </label>
+            ) : (
+              <label
+                className="text-gray-700 text-sm font-bold mb-2"
+                htmlFor="cardinality"
+              >
+                Cardinality
+                <input
+                  type="number"
+                  name="gen_choice"
+                  id="gen_choice"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  min={1}
+                  max={1000}
+                  onChange={handleChange}
+                  value={requestData.gen_choice}
+                />
+              </label>
+            )}
           </div>
 
           <div className="flex w-full gap-4 items-center">
