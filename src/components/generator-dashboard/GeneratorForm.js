@@ -41,40 +41,64 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
     }
   };
 
-  const handleDownload = (e, ext) => {
-    e.preventDefault();
+  // const handleDownload = async (e, ext) => {
+  //   e.preventDefault();
 
-    //return type is a zip file and make sure to download the zip file
+  //   //return type is a zip file and make sure to download the zip file
+  //   let s3ObjectLink = "";
 
-    fetch(`http://localhost:5000/get_file/${uuid}/${ext}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/zip",
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          console.log("Hereee");
-          return res.blob();
-        }
-        alert("Something went wrong");
-      })
-      .then((blob) => {
-        // Create a URL for the blob
-        const url = window.URL.createObjectURL(blob);
+  //   if (ext === "csv") {
+  //     s3ObjectLink = `https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_csv.csv`;
+  //   } else if (ext === "wkt") {
+  //     s3ObjectLink = `https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_wkt_file.wkt`;
+  //   } else {
+  //     s3ObjectLink = `https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_shape_file.shp`;
+  //   }
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${uuid}.${ext}`;
-        a.click();
+  //   console.log("S3 Object Link : ", s3ObjectLink);
+  //   try {
+  //     const response = await fetch(s3ObjectLink);
+  //     const blob = await response.blob();
+  //     const url = window.URL.createObjectURL(new Blob([blob]));
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "filename"; // Provide the desired filename
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     a.remove();
+  //   } catch (error) {
+  //     console.error("Error downloading file:", error);
+  //   }
 
-        // Cleanup
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Error downloading zip file:", error);
-      });
-  };
+  // fetch(`http://localhost:5000/get_file/${uuid}/${ext}`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/zip",
+  //   },
+  // })
+  //   .then((res) => {
+  //     if (res.ok) {
+  //       console.log("Hereee");
+  //       return res.blob();
+  //     }
+  //     alert("Something went wrong");
+  //   })
+  //   .then((blob) => {
+  //     // Create a URL for the blob
+  //     const url = window.URL.createObjectURL(blob);
+
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `${uuid}.${ext}`;
+  //     a.click();
+
+  //     // Cleanup
+  //     window.URL.revokeObjectURL(url);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error downloading zip file:", error);
+  //   });
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -254,25 +278,27 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
             {data && (
               <div className="flex flex-wrap gap-6">
-                <button
-                  onClick={(event) => handleDownload(event, "csv")}
+                <a
+                  href={`https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_csv.csv`}
+                  target="_blank"
+                  rel="noreferrer"
                   className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
                 >
                   Download CSV
-                </button>
-                <button
-                  onClick={(event) => handleDownload(event, "shp")}
-                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
-                >
-                  Download SHP
-                </button>
-
-                <button
-                  onClick={(event) => handleDownload(event, "wkt")}
+                </a>
+                <a
+                  href={`https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_wkt_file.wkt`}
                   className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
                 >
                   Download WKT
-                </button>
+                </a>
+
+                <a
+                  href={`https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_shape_file.shp`}
+                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+                >
+                  Download SHP
+                </a>
               </div>
             )}
           </div>

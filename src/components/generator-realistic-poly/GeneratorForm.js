@@ -70,13 +70,14 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         console.log(res);
         setUuid(res.dataset_id);
         let temp = JSON.parse(res.for_visualizer);
-        console.log(
-          JSON.stringify(
-            temp.features.map((item) => item.geometry.coordinates[0])
-          )
-        );
+        // console.log(
+        //   JSON.stringify(
+        //     temp.features.map((item) => item.geometry.coordinates[0])
+        //   )
+        // );
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
+        console.log("request data == ", requestData);
         addToHistory({ ...requestData, dataset_id: res.dataset_id });
       })
       .catch((err) => {
@@ -202,25 +203,27 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
             </div>
             {data && (
               <div className="flex flex-wrap gap-6">
-                <button
-                  onClick={(event) => handleDownload(event, "csv")}
+                <a
+                  href={`https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_csv.csv`}
+                  target="_blank"
+                  rel="noreferrer"
                   className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
                 >
                   Download CSV
-                </button>
-                <button
-                  onClick={(event) => handleDownload(event, "shp")}
-                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
-                >
-                  Download SHP
-                </button>
-
-                <button
-                  onClick={(event) => handleDownload(event, "wkt")}
+                </a>
+                <a
+                  href={`https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_wkt_file.wkt`}
                   className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
                 >
                   Download WKT
-                </button>
+                </a>
+
+                <a
+                  href={`https://spatialpolygon.s3.ap-south-1.amazonaws.com/outputs/${uuid}/my_shape_file.shp`}
+                  className="bg-green-700 text-white flex rounded-md px-4 py-2 text-sm hover:bg-green-400 disabled:bg-green-400 disabled:text-white"
+                >
+                  Download SHP
+                </a>
               </div>
             )}
           </div>
