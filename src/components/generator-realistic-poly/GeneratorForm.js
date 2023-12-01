@@ -46,24 +46,25 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(requestData);
+    let augmentedRequest =
+      choice === "File Size"
+        ? JSON.stringify({
+            file_size: requestData.gen_choice,
+            type: requestData.type,
+          })
+        : JSON.stringify({
+            cardinality: requestData.gen_choice,
+            type: requestData.type,
+          });
 
     setLoading(true);
 
-    fetch("http://localhost:5000/realistic_polygon/", {
+    fetch("http://localhost:5000/realistic_polygon/v2/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body:
-        choice === "File Size"
-          ? JSON.stringify({
-              file_size: requestData.gen_choice,
-              type: requestData.type,
-            })
-          : JSON.stringify({
-              card: requestData.gen_choice,
-              type: requestData.type,
-            }),
+      body: augmentedRequest,
     })
       .then((res) => res.json())
       .then((res) => {
@@ -77,7 +78,10 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         );
         setData(temp.features.map((item) => item.geometry.coordinates[0]));
         setLoading(false);
-        addToHistory({ ...requestData, dataset_id: res.dataset_id });
+        addToHistory({
+          ...JSON.parse(augmentedRequest),
+          dataset_id: res.dataset_id,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -129,11 +133,20 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
           </span>
         </h2>
         <div className="flex flex-col p-4 gap-8">
-          <div className="flex flex-row justify-around">
-            <select onChange={handleSelection}>
-              <option>File Size</option>
-              <option>Cardinality</option>
-            </select>
+          <div className="flex flex-row gap-4">
+            <label
+              className="text-gray-700 text-sm font-bold mb-2 flex-1"
+              htmlFor="selection"
+            >
+              Dataset size
+              <select
+                onChange={handleSelection}
+                className="block shadow-lg border rounded w-full py-2"
+              >
+                <option>File Size</option>
+                <option>Cardinality</option>
+              </select>
+            </label>
 
             {choice === "File Size" ? (
               <label
@@ -236,18 +249,26 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
             onClick={(event) => handleClickRecord(event, item)}
             key={item?.dataset_id}
           >
-            <p>
-              <span>Cardinality:</span>
-              {item.cardinality}
-            </p>
-            <p>
+            {item?.cardinality ? (
+              <p>
+                <span>Cardinality:</span>
+                {item.cardinality}
+              </p>
+            ) : (
+              <p>
+                <span>File-size:</span>
+                {item.file_size}
+              </p>
+            )}
+
+            {/* <p>
               <span>Xsize:</span>
               {item.xsize}
-            </p>
-            <p>
+            </p> */}
+            {/* { <p>
               <span>Ysize:</span>
               {item.ysize}
-            </p>
+           </p>} */}
             <p>
               <span>Type:</span>
               {item.type}
