@@ -17,7 +17,7 @@ export default function GeneratorDashboard() {
           requestData={requestData}
           setRequestData={setRequestData}
         />
-        <div className="overflow-auto" key={data}>
+        <div className="col-span-1" key={data}>
           <MapOutput
             // dimensions={{
             // width: requestData.xsize,

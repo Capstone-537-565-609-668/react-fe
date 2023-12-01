@@ -6,7 +6,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
   const [uuid, setUuid] = useState(null);
   const { history, addToHistory } = useHistory("realistic-polygon");
-  const [choice, setChoise] = useState("File Size");
+  const [choice, setChoise] = useState("Cardinality");
   const handleChange = (e) => {
     setRequestData({ ...requestData, [e.target.name]: e.target.value });
   };
@@ -125,7 +125,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   };
   console.log(choice);
   return (
-    <div className="pl-3">
+    <div className="p-8">
       <div>
         <h2>
           <span className="text-2xl font-bold">
@@ -140,6 +140,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
             >
               Dataset size
               <select
+                value={choice}
                 onChange={handleSelection}
                 className="block shadow-lg border rounded w-full py-2"
               >

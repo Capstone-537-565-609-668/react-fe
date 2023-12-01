@@ -10,6 +10,8 @@ const initObj = {
 export default function GeneratorDashboard() {
   const [data, setData] = useState(null);
   const [requestData, setRequestData] = useState(initObj);
+  const [pointsData, setPointsData] = useState([]);
+
   return (
     <div className="w-full h-screen">
       <div className="grid grid-cols-2 overflow-hidden">
@@ -18,9 +20,11 @@ export default function GeneratorDashboard() {
           data={data}
           requestData={requestData}
           setRequestData={setRequestData}
+          setPointsData={setPointsData}
         />
         <div className="overflow-auto">
           <PolygonCanvas
+            pointsData={pointsData}
             dimensions={{
               width: requestData.xsize,
               height: requestData.ysize,

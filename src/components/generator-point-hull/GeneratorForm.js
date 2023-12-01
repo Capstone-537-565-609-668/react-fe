@@ -1,7 +1,13 @@
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import useHistory from "../../hooks/useHistory";
-const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
+const GeneratorForm = ({
+  setData,
+  data,
+  requestData,
+  setRequestData,
+  setPointsData,
+}) => {
   const [loading, setLoading] = useState(false);
 
   const [uuid, setUuid] = useState(null);
@@ -59,6 +65,9 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
         console.log(res);
         setUuid(res.dataset_id);
         let temp = JSON.parse(res.for_visualizer);
+        const points = res.points;
+        console.log(`points ${JSON.stringify(points)}`);
+        setPointsData(points);
         console.log(
           JSON.stringify(
             temp.features.map((item) => item.geometry.coordinates[0])
@@ -109,7 +118,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
       });
   };
   return (
-    <div className="pl-3">
+    <div className="p-8">
       <div>
         <h2>
           <span className="text-2xl font-bold">

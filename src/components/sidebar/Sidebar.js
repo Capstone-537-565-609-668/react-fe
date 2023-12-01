@@ -8,8 +8,11 @@ function Sidebar() {
   };
   return (
     <div>
-      <div className="bg-slate-100 sticky top-0 p-2">
-        <select className="mt-10" onChange={handler}>
+      <div className="sticky top-0 p-2">
+        <select
+          onChange={handler}
+          className="block shadow-lg border rounded w-full py-2 mt-10"
+        >
           <option value={"/polygon-gen"}>Polygon Generation</option>
           <option value={"/voronoi-point"}>Point Generation - Voronoi</option>
           <option value={"/convex-hull-point"}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const PolygonCanvas = ({ dimensions, polygons }) => {
+const PolygonCanvas = ({ dimensions, polygons, pointsData }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -25,7 +25,17 @@ const PolygonCanvas = ({ dimensions, polygons }) => {
       ctx.lineWidth = 2;
       ctx.stroke();
     });
-  }, [dimensions, polygons]);
+
+    pointsData.forEach(([x, y]) => {
+      ctx.beginPath();
+      ctx.moveTo(x - 5, y - 5);
+      ctx.lineTo(x + 5, y + 5);
+      ctx.moveTo(x - 5, y + 5);
+      ctx.lineTo(x + 5, y - 5);
+      ctx.strokeStyle = "red";
+      ctx.stroke();
+    });
+  }, [dimensions, polygons, pointsData]);
 
   if (!polygons || polygons?.length === 0) {
     return <p>No data</p>;
