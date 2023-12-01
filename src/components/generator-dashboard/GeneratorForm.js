@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import useHistory from "../../hooks/useHistory";
-
+import validation from "../../utils/validation";
 const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
   // const [requestData, setRequestData] = useState(initObj);
   const [loading, setLoading] = useState(false);
@@ -106,6 +106,11 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
 
     setLoading(true);
 
+    let tempResp = validation(requestData);
+    if (!tempResp) {
+      setLoading(false);
+      return;
+    }
     fetch("http://localhost:5000/", {
       method: "POST",
       headers: {
@@ -235,7 +240,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
               className="text-gray-700 text-sm font-bold mb-2 flex-1"
               htmlFor="irregularity"
             >
-              irregularity
+              Irregularity
               <input
                 type="number"
                 name="irregularity"
@@ -243,6 +248,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 max={1}
                 min={0}
+                step={0.1}
                 onChange={handleChange}
                 value={requestData.irregularity}
               />
@@ -251,7 +257,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
               className="text-gray-700 text-sm font-bold mb-2 flex-1"
               htmlFor="spikiness"
             >
-              spikiness
+              Spikiness
               <input
                 type="number"
                 name="spikiness"
@@ -259,6 +265,7 @@ const GeneratorForm = ({ setData, data, requestData, setRequestData }) => {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 min={0}
                 max={1}
+                step={0.1}
                 onChange={handleChange}
                 value={requestData.spikiness}
               />

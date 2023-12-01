@@ -4,6 +4,8 @@ import PointHull from "./components/generator-point-hull";
 import RealisticPoly from "./components/generator-realistic-poly";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/sidebar/Sidebar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <Router>
@@ -22,6 +24,7 @@ function App() {
           </Routes>
         </div>
       </div>
+      <ToastContainer />
     </Router>
   );
 }
